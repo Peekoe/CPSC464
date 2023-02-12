@@ -1,5 +1,5 @@
 from flask import Flask, make_response, redirect, request
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 import json
 
 @dataclass
@@ -34,11 +34,23 @@ def movie(index):
 
 @app.post("/spiderman-trilogy")
 def add_movie():
+  if request.data == b'' or request.data == None:
+    return redirect('https://http.cat/400')
+
   try:
     mov = json.loads(request.data)
     # just leared about dict destructuring, that's crazy
     trilogy.append(Movie(**mov))
     return make_response(trilogy, 201)
+  except Exception as e:
+    return internal_server_error(e)
+
+
+@app.delete("/spiderman-trilogy/<int:index>")
+def delete_movie(index: int):
+  try:
+    popped = asdict(trilogy.pop(index - 1))
+    return make_response(popped, 200)
   except Exception as e:
     return internal_server_error(e)
 
