@@ -1,9 +1,17 @@
-from flask import Flask, redirect
+from flask import Flask, make_response, redirect, request
+from dataclasses import dataclass, asdict
+import json
 
-trilogy = [
-  { "title": "Spider-Man",   "release-year": 2002, "director": "Sam Raimi" },
-  { "title": "Spider-Man 2", "release-year": 2004, "director": "Sam Raimi" },
-  { "title": "Spider-Man 3", "release-year": 2007, "director": "Sam Raimi" }
+@dataclass
+class Movie:
+  title: str
+  release_year: int
+  director: str
+
+trilogy: list[Movie] = [
+  Movie("Spider-Man", 2002, "Sam Raimi"),
+  Movie("Spider-Man 2", 2004, "Sam Raimi"),
+  Movie("Spider-Man 3", 2007, "Sam Raimi"),
 ]
 
 app = Flask(__name__)
@@ -21,7 +29,18 @@ def movies():
 
 @app.route("/spiderman-trilogy/<int:index>")
 def movie(index):
-  return trilogy[index - 1] if 0 < index < 4 else redirect('https://http.cat/404')
+  return trilogy[index - 1] if 0 < index < len(trilogy) + 1 else redirect('https://http.cat/404')
+
+
+@app.post("/spiderman-trilogy")
+def add_movie():
+  try:
+    mov = json.loads(request.data)
+    # just leared about dict destructuring, that's crazy
+    trilogy.append(Movie(**mov))
+    return make_response(trilogy, 201)
+  except Exception as e:
+    return internal_server_error(e)
 
 
 @app.errorhandler(404)
