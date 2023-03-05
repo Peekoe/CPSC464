@@ -51,3 +51,29 @@ def create_habit(db: Session, habit: schemas.HabitCreate, user_id: uuid.UUID) ->
   db.commit()
   db.refresh(db_habit)
   return db_habit
+
+
+def get_entries_by_habit(db: Session, habit_id: uuid.UUID):
+  return db.query(models.Entry).filter_by(habit_id = habit_id)
+
+
+def get_entry(db: Session, entry: schemas.EntryBase):
+  return db.query(models.Entry).filter_by(date = entry.date, 
+                                          habit_id = entry.habit_id)
+
+
+def create_entry(db: Session, entry: schemas.EntryCreate):
+  id = uuid.uuid4()
+
+  db_entry = models.Entry(
+    id = id,
+    date = entry.date,
+    value = entry.value,
+    is_counted = entry.is_counted,
+    habit_id = entry.habit_id
+  )
+
+  db.add(db_entry)
+  db.commit()
+  db.refresh(db_entry)
+  return db_entry

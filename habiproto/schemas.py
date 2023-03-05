@@ -1,11 +1,12 @@
 #!/usr/bin/env python3 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from uuid import UUID
 from datetime import date
 
 
 class UserBase(BaseModel):
-  email: str
+  # User's email
+  email: str = Field(default="test@example.com", description="The email this user registered with")
 
 
 class UserCreate(UserBase):
