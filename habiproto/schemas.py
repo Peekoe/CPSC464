@@ -24,19 +24,22 @@ class HabitBase(BaseModel):
   name: str
   description: str
   goal: int
-  start_date: date
-
-  class Config:
-    orm_mode = True
+  start_date: date  
 
 
 class Habit(HabitBase):
   id: UUID
   owner_id: UUID
 
+  class Config:
+    orm_mode = True
+
+
+class HabitCreate(HabitBase):
+  pass
+
 
 class EntryBase(BaseModel):
-  id: UUID
   date: date
   value: int
   is_counted: bool
@@ -44,3 +47,11 @@ class EntryBase(BaseModel):
 
   class Config:
     orm_mode = True
+
+
+class Entry(EntryBase):
+  id: UUID
+
+
+class EntryCreate(EntryBase):
+  pass
