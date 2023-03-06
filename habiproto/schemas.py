@@ -1,58 +1,60 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 from pydantic import BaseModel, Field
 from uuid import UUID
 from datetime import date
 
 
 class UserBase(BaseModel):
-  # User's email
-  email: str = Field(default="test@example.com", description="The email this user registered with")
+    # User's email
+    email: str = Field(
+        default="test@example.com", description="The email this user registered with"
+    )
 
 
 class UserCreate(UserBase):
-  password: str
+    password: str
 
 
 class User(UserBase):
-  id: UUID
-  is_active: bool
+    id: UUID
+    is_active: bool
 
-  class Config:
-    orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class HabitBase(BaseModel):
-  name: str
-  description: str
-  goal: int
-  start_date: date  
+    name: str
+    description: str
+    goal: int
+    start_date: date
+    is_counted: bool
 
 
 class Habit(HabitBase):
-  id: UUID
-  owner_id: UUID
+    id: UUID
+    owner_id: UUID
 
-  class Config:
-    orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class HabitCreate(HabitBase):
-  pass
+    pass
 
 
 class EntryBase(BaseModel):
-  date: date
-  value: int
-  is_counted: bool
-  habit_id: UUID
+    date: date
+    value: int
+    habit_id: UUID
 
-  class Config:
-    orm_mode = True
+    class Config:
+        orm_mode = True
 
 
 class Entry(EntryBase):
-  id: UUID
+    id: UUID
 
 
 class EntryCreate(EntryBase):
-  pass
+    pass
