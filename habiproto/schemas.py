@@ -4,6 +4,15 @@ from uuid import UUID
 from datetime import date
 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str | None = None
+
+
 class UserBase(BaseModel):
     # User's email
     email: str = Field(

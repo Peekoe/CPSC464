@@ -2,9 +2,10 @@
 from sqlalchemy.orm import Session
 from uuid import uuid4, UUID
 import models, schemas
+import auth
 
 
-def get_user(db: Session, user_id: int):
+def get_user(db: Session, user_id: str):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
 
@@ -16,11 +17,11 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 
-def create_user(db: Session, user: schemas.UserCreate) -> schemas.User:
+def create_user(db: Session, pwd_context, user: schemas.UserCreate) -> schemas.User:
     id = uuid4()
-    fake_hashed_password = user.password + "notreallyhashed"
+    hashed_password = auth.get_password_hash(pwd_context, user.password)
     db_user = models.User(
-        id=id, email=user.email, hashed_password=fake_hashed_password, is_active=True
+        id=id, email=user.email, hashed_password=hashed_password, is_active=True
     )
     db.add(db_user)
     db.commit()
